@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datakulma</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- ONBOARDING -->
+    <section class="view onboarding" id="onboardingView" hidden>
+        <div class="onboarding-card">
+            <img class="onboarding-mascot" src="assets/mascot.png" alt="">
+            <h1>Hauska tavata!</h1>
+            <p class="lead">Olen Kulma-Kullervo ja autan sinua ymmärtämään datakeskusten vaikutukset eri näkökulmista!</p>
+
+            <form id="onboardingForm" novalidate>
+                <label class="field-label" for="municipalityInput">Paikkakunta</label>
+                <div class="combo">
+                    <i class="fa-solid fa-location-dot combo-icon" aria-hidden="true"></i>
+                    <input id="municipalityInput" type="text" autocomplete="off" spellcheck="false"
+                           placeholder="Hae paikkakuntaa…"
+                           role="combobox" aria-autocomplete="list" aria-expanded="false"
+                           aria-controls="municipalityList">
+                    <ul class="combo-list" id="municipalityList" role="listbox" aria-label="Paikkakunnat" hidden></ul>
+                </div>
+
+                <label class="field-label" for="professionInput">Ammatti <span class="optional">(valinnainen)</span></label>
+<input id="professionInput" type="text" maxlength="80" autocomplete="off" placeholder="Esim. opettaja">
+
+
+                <p class="form-error" id="onboardingError" role="alert"></p>
+
+                <button type="submit" class="btn btn-primary" id="onboardingSubmit" disabled>
+                    Seuraava <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- AIHEALUEIDEN VALINTA -->
+    <section class="view topics" id="topicsView" hidden>
+        <header class="topics-header">
+            <span class="profile-chip" id="profileChip"></span>
+            <button type="button" class="link-btn" id="changeProfileBtn">Vaihda</button>
+        </header>
+        <div class="topics-intro">
+            <img class="topics-mascot" src="assets/mascot.png" alt="">
+            <h1 id="topicsTitle">Mihin haluat tutustua ensin?</h1>
+        </div>
+        <div class="topic-grid" id="topicGrid"></div>
+    </section>
+
+    <!-- ESITYS -->
+    <section class="view presentation" id="presentationView" hidden>
+        <div class="topic-fade" aria-hidden="true"></div>
+
+        <header class="pres-header">
+            <button type="button" class="icon-btn" id="presBackBtn" aria-label="Takaisin aihealueisiin">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            </button>
+            <h1 id="presTitle"></h1>
+            <span class="icon-btn-spacer" aria-hidden="true"></span>
+        </header>
+
+        <div class="stage">
+            <img class="mascot" id="mascotImg" src="assets/mascot.png" alt="" data-pose="wave">
+            <div class="bubble" id="bubble">
+                <span class="bubble-label" id="bubbleLabel"></span>
+                <p class="bubble-text"><span id="bubbleText" aria-live="polite"></span> <span id="bubblePill"></span></p>
+                <figure class="chart" id="bubbleChart" hidden></figure>
+                <button type="button" class="link-btn bubble-action" id="resumeBtn" hidden>
+                    <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Jatka esitystä
+                </button>
+            </div>
+        </div>
+
+        <div class="pres-controls" id="presControls">
+            <button type="button" class="icon-btn" id="prevBtn" aria-label="Edellinen">
+                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <div class="dots" id="dots" aria-hidden="true"></div>
+            <button type="button" class="btn btn-topic" id="nextBtn">
+                Seuraava <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="pres-end" id="presEnd" hidden>
+            <button type="button" class="btn btn-topic" id="nextTopicBtn"></button>
+            <button type="button" class="link-btn" id="allTopicsBtn">Tai tutustu muihin aihealueisiin</button>
+        </div>
+
+        <form class="prompt-bar" id="promptForm" autocomplete="off">
+            <input id="promptInput" type="text" maxlength="500" placeholder="Kysy lisää aiheesta..." aria-label="Kysy lisää aiheesta">
+            <button type="submit" class="prompt-send" aria-label="Lähetä kysymys">
+                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+            </button>
+        </form>
+    </section>
+
+    <!-- Lähdeluettelo, joka avautuu lähdepilleristä -->
+    <div class="cite-popover" id="citePopover" role="dialog" aria-label="Lähteet" hidden></div>
+
+    <script src="kunnat.js"></script>
+    <script src="content.js"></script>
+    <script src="content-kuopio.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

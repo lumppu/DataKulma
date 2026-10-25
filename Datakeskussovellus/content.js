@@ -1,0 +1,322 @@
+// Sovelluksen yhteinen sisältö (lähteet, aiheet) ja oletusprofiili:
+// tamperelainen rakennusmies. Kuopion opettajan sisältö on tiedostossa content-kuopio.js.
+// Profiili valitaan app.js:ssä onboardingissa syötetyn paikkakunnan mukaan.
+//
+// Jokaisessa aiheessa on viisi tärkeintä asiaa. Jokaisella kohdalla on lähteet
+// (SOURCES-avaimet), ja yhdessä kohdassa on kaavio.
+// Maskotin asennot: "wave" (tervehtii), "point" (selittää), "think" (miettii).
+
+const MASCOT_NAME = 'Kulma-Kullervo';
+
+const SOURCES = {
+    'fi-vu-ruusunen': { publisher: 'Verkkouutiset', date: '2026-04-11', url: 'https://www.verkkouutiset.fi/a/professori-varoittaa-datakeskukset-voisivat-nostaa-sahkon-hintaa/',
+        title: 'Professori varoittaa: Datakeskukset voisivat nostaa sähkön hintaa (valtioneuvoston datakeskusselvitys)' },
+    'fi-yle-energiateollisuus': { publisher: 'Yle', date: '2026-02-11', url: 'https://yle.fi/a/74-20208368',
+        title: 'Datakeskukset tuovat mukanaan uutta sähköntuotantoa – Energiateollisuus: ”Huoli hintojen noususta turha”' },
+    'tre-te-paastot': { publisher: 'Tampereen Energia', date: '2026-01-13', url: 'https://www.sttinfo.fi/tiedote/71730631/tampereen-energian-kaukolammon-paastot-laskivat-vuodessa-selvasti-paastot-vahentyneet-85-percent-vuodesta-2010?lang=fi',
+        title: 'Tampereen Energian kaukolämmön päästöt laskivat vuodessa selvästi – päästöt vähentyneet 85 % vuodesta 2010' },
+    'tre-akaa-dcd': { publisher: 'BeBeez / DCD', date: '2025-09-05', url: 'https://bebeez.eu/en/news/ai-cloud-datacrunch-proposes-data-center-in-akaa-finland/',
+        title: 'AI cloud DataCrunch proposes data center in Akaa, Finland' },
+    'fi-ms-fdca': { publisher: 'Microsoft (FDCA:n ja EK:n selvitys)', date: '2025-09-18', url: 'https://news.microsoft.com/source/emea/2025/09/selvitys-datakeskukset-vauhdittavat-suomen-digitaalista-kasvua/?lang=fi',
+        title: 'Selvitys: Datakeskukset vauhdittavat Suomen digitaalista kasvua' },
+    'fi-tiedeakatemia': { publisher: 'Suomalainen Tiedeakatemia', date: '2025-08-29', url: 'https://www.sttinfo.fi/tiedote/71396581/datakeskusbuumi-tutkijat-arvioivat-miten-miljardihankkeista-saadaan-suurin-hyoty-kunnille',
+        title: 'Datakeskusbuumi: tutkijat arvioivat, miten miljardihankkeista saadaan suurin hyöty kunnille' },
+    'fi-mtv-vero': { publisher: 'MTV Uutiset', date: '2026-05-05', url: 'https://www.mtvuutiset.fi/artikkeli/suomesta-datakeskusten-eldorado-veropomolta-suorat-sanat-miinusmerkkisia/9334084',
+        title: 'Suomesta datakeskusten eldorado, veropomolta suorat sanat: miinusmerkkisiä' },
+    'fi-kouvolan-asunnot': { publisher: 'Kouvolan Sanomat', date: '2026-02-22', url: 'https://www.kouvolansanomat.fi/paikalliset/9247277',
+        title: 'Kouvolan Asunnot alkoi vuokrata asuntojaan eteenpäin yrityksille' },
+    'fi-omakotiliitto': { publisher: 'Omakotiliitto', date: '2026-05-07', url: 'https://www.sttinfo.fi/files/67340313/72011769/375324/fi',
+        title: 'Selvitys sähkön siirtomaksuista 2026: tyyppiomakotitalo (sähkölämmitys 14 000 + käyttösähkö 4 000 kWh/v, 3 asukasta)' },
+    'fi-kiuas': { publisher: 'K-Rauta', date: '', url: 'https://www.k-rauta.fi/tuote/sahkokiuas-harvia-forte-teras-6kw/6410082645435',
+        title: 'Sähkökiuas Harvia Forte 6 kW (tavallinen kodin saunan kiuas)' },
+    'tre-vakiluku': { publisher: 'Tampereen kaupunki', date: '2026-03-23', url: 'https://www.tampere.fi/sites/default/files/2026-03/Tilinpaatos-2025--23.3.2026.pdf',
+        title: 'Tilinpäätös 2025: tamperelaisia oli vuoden lopussa yli 263 000' },
+    'tre-yle-nokia': { publisher: 'Yle', date: '2025-04-09', url: 'https://yle.fi/a/74-20154716',
+        title: 'Nokialle suunnitellaan satojen miljoonien eurojen datakeskusta – sähkön verotuksen muutos voi horjuttaa hankkeita' },
+    'tre-yle-mantta': { publisher: 'Yle', date: '', url: 'https://yle.fi/a/74-20225895',
+        title: 'Mänttä-Vilppulaan suunnitellaan isoa investointia: tavoitteena rakentaa datakeskus' },
+    'tre-te-datasali': { publisher: 'Tampereen Energia', date: '2021-11-10', url: 'https://www.tampereenenergia.fi/uutiset/hukkalammon-jakaminen-kaukolampoverkossa-tekee-datasalista-energiantuottajan-tampereelle/',
+        title: 'Datasalista energiantuottaja Tampereella' },
+    'tre-ilmastovahti': { publisher: 'Tampereen kaupunki', date: '2026-05-10', url: 'https://ilmastovahti.tampere.fi/en/actions/4.1.6',
+        title: 'Ilmastovahti: Polttamaton, hiilinegatiivinen kaukolämpö (toimenpide 4.1.6)' },
+    'tre-rekisteri': { publisher: 'Datakeskusrekisteri', date: '2026', url: 'https://www.datakeskusrekisteri.fi/',
+        title: 'Datakeskushankkeiden kansallinen rekisteri (esiversio)' },
+    'fi-hs-fingrid': { publisher: 'HS', date: '2026-08-16', url: 'https://www.hs.fi/politiikka/art-2000012208602.html',
+        title: 'Datakeskusryntäys voi nostaa sähkön hintaa, arvioi Fingrid' },
+    'fi-uusiutuvat': { publisher: 'Suomen Uusiutuvat', date: '2026-06-16', url: 'https://suomenuusiutuvat.fi/datakeskusten-sahkotarpeeseen-on-jo-olemassa-ratkaisu/',
+        title: 'Datakeskusten sähkötarpeeseen on jo olemassa ratkaisu' },
+    'fi-caverion': { publisher: 'Tekniikka & Talous', date: '2025-09-24', url: 'https://www.tekniikkatalous.fi/kumppanisisallot/caverion/viisi-myyttia-datakeskuksista-ja-mita-niista-oikeasti-pitaisi-tietaa/',
+        title: 'Viisi myyttiä datakeskuksista – ja mitä niistä oikeasti pitäisi tietää (Caverion, kaupallinen yhteistyö)' },
+    'fi-korkia': { publisher: 'Korkia', date: '2026-05-20', url: 'https://korkia.fi/fi/datakeskukset-suomessa-sahkojarjestelman-painolasti-vai-pelastaja/',
+        title: 'Datakeskukset Suomessa – sähköjärjestelmän painolasti vai pelastaja?' },
+    'fi-inderes': { publisher: 'Inderes', date: '2026-09-02', url: 'https://www.inderes.fi/analyst-comments/case-datakeskukset-rakentamisen-kylmakaynnistajana',
+        title: 'Case: Datakeskukset rakentamisen kylmäkäynnistäjänä' },
+    'fi-sll': { publisher: 'Luonnonsuojeluliitto', date: '2026-09-10', url: 'https://www.sll.fi/ajankohtaista/5-syyta-miksi-datakeskukset-uhkaavat-luontoa-ja-ilmastoa/',
+        title: '5 syytä, miksi datakeskukset uhkaavat luontoa ja ilmastoa' },
+    'fi-vu-duunitori': { publisher: 'Verkkouutiset', date: '2026-10-15', url: 'https://www.verkkouutiset.fi/a/datakeskusten-tyopaikkailmoitukset-lahes-nelinkertaistuivat-naita-osaajia-haetaan/',
+        title: 'Datakeskusten työpaikkailmoitukset lähes nelinkertaistuivat – näitä osaajia haetaan' },
+    'fi-kaleva-muhos': { publisher: 'Kaleva', date: '2026-10-07', url: 'https://www.kaleva.fi/google-oikaisi-yva-menettelyn-muhoksella-koneet-py/13699057',
+        title: 'Google oikaisi Yva-menettelyn Muhoksella – koneet pysähtyvät ja jättihanke viivästyy' },
+    'fi-vu-lvv': { publisher: 'Verkkouutiset', date: '2026-10-06', url: 'https://www.verkkouutiset.fi/a/viranomainen-kehottaa-googlea-keskeyttamaan-datakeskusten-valmistelun/',
+        title: 'Viranomainen kehottaa Googlea keskeyttämään datakeskusten valmistelun' },
+    'fi-ely-kirkkonummi': { publisher: 'Uudenmaan ELY-keskus', date: '2024-03-26', url: 'https://www.ymparisto.fi/sites/default/files/documents/Kuulutus_Kirkkonummen_datakeskusalue_26032024.pdf',
+        title: 'Kuulutus: Kirkkonummen datakeskusalueen ympäristövaikutusten arviointi' },
+    'fi-yle-vaasa': { publisher: 'Yle', date: '2026-06-23', url: 'https://yle.fi/a/74-20232883',
+        title: 'Tämä tiedetään Microsoftin suunnittelemasta jättimäisestä datakeskuksesta Vaasassa' },
+    'fi-rt-kasvu': { publisher: 'Rakennusteollisuus RT', date: '2026-10-07', url: 'https://www.sttinfo.fi/tiedote/72390433/datakeskukset-ovat-vetaneet-rakentamisen-kasvuun?lang=fi',
+        title: 'Datakeskukset ovat vetäneet rakentamisen kasvuun' },
+    'fi-rt-tyoturvallisuus': { publisher: 'Rakennusteollisuus RT', date: '2026-02-04', url: 'https://rt.fi/wp-content/uploads/2026/02/2025-Tyoturvallisuuskatsaus.pdf',
+        title: 'Työturvallisuuskatsaus 2025' },
+    'fi-yle-finer': { publisher: 'Yle', date: '2026-06-24', url: 'https://yle.fi/a/74-20229663',
+        title: 'Finérin veljekset ovat esimerkki siitä, mitä datakeskukset tekevät nyt' },
+    'fi-yle-kouvola': { publisher: 'Yle', date: '', url: 'https://yle.fi/a/74-20225416',
+        title: 'Tiktokin datakeskus on alkanut palkata työntekijöitä Kouvolaan' },
+    'fi-jarvenpaa-yva': { publisher: 'Ramboll (Järvenpään YVA)', date: '2026-05-20', url: 'https://www.ymparisto.fi/sites/default/files/documents/J%C3%A4rvenp%C3%A4%C3%A4n%20datakeskus%20YVA-selostus_saavutettava_FINAL_0.pdf',
+        title: 'Järvenpään datakeskus, ympäristövaikutusten arviointiselostus' },
+    'fi-vn-cer': { publisher: 'Valtioneuvosto', date: '2024-01-19', url: 'https://valtioneuvosto.fi/-/1410869/yhteiskunnan-toimintakyvyn-kannalta-kriittisen-infrastruktuurin-suojaamista-parannetaan',
+        title: 'Yhteiskunnan toimintakyvyn kannalta kriittisen infrastruktuurin suojaamista parannetaan' },
+    'tre-ks-tarastenjarvi': { publisher: 'Kangasalan Sanomat', date: '2026-09-30', url: 'https://kangasalansanomat.fi/datakeskus-tuo-tarasteelle-uudenlaisen-toimijan-hukkalammon-hyodyntaminen-luo-mahdollisuuksia-alueen-kehittamiseen/',
+        title: 'Datakeskus tuo Tarasteelle uudenlaisen toimijan' },
+    'tre-ks-asema': { publisher: 'Kangasalan Sanomat', date: '2026-06-24', url: 'https://kangasalansanomat.fi/aseman-seudulle-suunnitteilla-datakeskus-tama-on-tarkea-hanke-seka-meille-etta-kangasalan-kaupungille/',
+        title: 'Aseman seudulle suunnitteilla datakeskus' },
+    'tre-business-kangasala': { publisher: 'Business Kangasala', date: '2026-08-24', url: 'https://www.businesskangasala.fi/kangasala-ja-datakeskushankkeet/',
+        title: 'Kangasala ja datakeskushankkeet' },
+    'tre-akaa-verda': { publisher: 'Datacenter Forum', date: '2025-09-08', url: 'https://www.datacenter-forum.com/verda/datacrunch-plans-data-center-in-akaa-finland',
+        title: 'DataCrunch plans data center in Akaa, Finland' },
+};
+
+// Valokuvat (Wikimedia Commons, ladattu kansioon assets/photos, jotta esitys toimii ilman nettiä).
+// Lisenssit vaativat tekijän ja lisenssin näkyviin, ks. app.js photoHtml.
+const PHOTOS = {
+    tuulivoima: { type: 'photo', alt: 'Tuulivoimaloita metsän ja pellon takana',
+        src: 'assets/photos/tuulivoima.jpg',
+        credit: { author: 'Q0ywo', license: 'CC BY-SA 4.0', url: 'https://commons.wikimedia.org/wiki/File:Rasmus_wind_farm_Koskenkorva_Ilmajoki.jpg' } },
+    tyomaa: { type: 'photo', alt: 'Rakennustyömaa ja nosturi kerrostalojen keskellä',
+        src: 'assets/photos/tyomaa.jpg',
+        credit: { author: 'MKFI', license: 'Public domain', url: 'https://commons.wikimedia.org/wiki/File:Atlantinkatu_17_rakennusty%C3%B6maa_2024.JPG' } },
+    voimajohto: { type: 'photo', alt: 'Suurjännitteinen voimajohtopylväs metsän keskellä',
+        src: 'assets/photos/voimajohto.jpg',
+        credit: { author: 'Htm', license: 'CC BY-SA 3.0', url: 'https://commons.wikimedia.org/wiki/File:Rautarouva_voimajohtopylv%C3%A4s_1.JPG' } },
+    sahkoasentaja: { type: 'photo', alt: 'Sähköasentaja asentaa kaapeleita tikkailla',
+        src: 'assets/photos/sahkoasentaja.jpg',
+        credit: { author: 'MTA Capital Construction', license: 'CC BY 2.0', url: 'https://commons.wikimedia.org/wiki/File:Electrician_installing_cables_in_a_substation_room_of_the_future_passenger_concourse._(CM014B,_11-28-2018)_(31180259657).jpg' } },
+};
+
+// Värien mukaan sateenkaarijärjestyksessä keltaisesta violettiin.
+// Järjestys on myös "seuraava aihealue" -järjestys.
+const CATEGORIES = [
+    { id: 'energia',      title: 'Energia',             color: '#f3e79b', icon: 'fa-bolt',          teaser: 'Sähkö, hinta ja hukkalämpö' },
+    { id: 'maankaytto',   title: 'Maankäyttö',          color: '#fac484', icon: 'fa-map',           teaser: 'Tontit, kaavat ja voimalinjat' },
+    { id: 'liikenne',     title: 'Liikenne',            color: '#f8a07e', icon: 'fa-truck',         teaser: 'Työmaaliikenne ja tiet' },
+    { id: 'tulevaisuus',  title: 'Tulevaisuus',         color: '#eb7f86', icon: 'fa-rocket',        teaser: 'Hankkeet ja epävarmuus' },
+    { id: 'turvallisuus', title: 'Turvallisuus',        color: '#ce6693', icon: 'fa-shield-halved', teaser: 'Varavoima, valvonta ja tietoturva' },
+    { id: 'ymparisto',    title: 'Ympäristö',           color: '#a059a0', icon: 'fa-leaf',          teaser: 'Luonto, lämpö ja päästöt' },
+    { id: 'tyopaikat',    title: 'Työllisyys & talous', color: '#5c53a5', icon: 'fa-briefcase',     teaser: 'Työpaikat, verotulot ja yritykset' },
+];
+
+const TAMPERE_PRESENTATIONS = {
+    energia: [
+        // Järjestys: hyvät vaikutukset ensin, kääntöpuolena lopuksi sähkölasku.
+        { pose: 'wave', sources: ['tre-ilmastovahti', 'tre-te-datasali'],
+          text: 'Datakeskuksen sähkö ei katoa: se muuttuu lämmöksi, jolla voi lämmittää koteja. Tampereella Nokian datasalin hukkalämpö on jo kaukolämpöverkon suurin hukkalämmön lähde – noin 2 500 omakotitalon lämmöt vuodessa.',
+          chart: { type: 'illustration', flow: true, items: [
+              { icon: 'fa-server', label: 'Datakeskuksen sähkö' },
+              { icon: 'fa-temperature-arrow-up', label: 'muuttuu lämmöksi' },
+              { icon: 'fa-house-chimney', value: 'n. 2 500', label: 'omakotitalon lämmöt' },
+          ] } },
+        { pose: 'point', sources: ['tre-te-paastot'],
+          text: 'Hukkalämpö tekee kaukolämmöstä puhtaampaa. Tampereen kaukolämmön päästöt ovat laskeneet 85 % vuodesta 2010, ja yksi syy on hukkalämmön käytön lisääminen.',
+          chart: {
+              title: 'Tampereen kaukolämmön päästöt', unit: 'g CO2e / kWh',
+              bars: [
+                  { label: '2024', value: 83 },
+                  { label: '2025 (alustava)', value: 64 },
+              ],
+          } },
+        { pose: 'point', sources: ['fi-caverion', 'fi-yle-energiateollisuus', 'fi-vu-duunitori'],
+          text: 'Datakeskukset pyörittävät tekoälyä, jolla voidaan säästää energiaa esimerkiksi teollisuudessa ja logistiikassa. Ne myös vauhdittavat uuden tuulivoiman ja sähköverkon rakentamista – rakentajalle se tarkoittaa töitä, ja eniten haetaan sähköasentajia.',
+          chart: PHOTOS.tuulivoima },
+        // 100 MW x 8 760 h = 876 GWh / 18 000 kWh = ~48 700 sähkölämmitteistä omakotitaloa x 3 asukasta; 100 MW / 6 kW = ~16 700 kiuasta
+        { pose: 'think', sources: ['tre-yle-nokia', 'tre-rekisteri', 'fi-kiuas', 'fi-omakotiliitto', 'tre-vakiluku'],
+          text: 'Mutta sähköä kuluu paljon. Kangasalle suunniteltu 100 megawatin datakeskus on kuin 16 700 saunan kiuasta jatkuvasti päällä, ja vuodessa se käyttää yhtä paljon sähköä kuin yli puolen tamperelaisista kodit.',
+          chart: {
+              type: 'pictogram', icon: 'fa-person',
+              title: 'Kuinka monen asukkaan kotien sähkö?', legend: '1 kuvake = 20 000 asukasta', per: 20000,
+              rows: [
+                  { label: 'Nokia, 30 MW', value: 43800, total: 263000, display: 'noin 44 000' },
+                  { label: 'Kangasala, 100 MW', value: 146000, total: 263000, display: 'noin 146 000' },
+              ],
+              note: 'Harmaa = kaikki tamperelaiset (yli 263 000). Laskettu täydellä teholla ympäri vuoden; sähkölämmitteinen omakotitalo kuluttaa 18 000 kWh vuodessa ja siinä asuu 3 ihmistä.',
+          } },
+        { pose: 'think', sources: ['fi-uusiutuvat', 'fi-hs-fingrid'],
+          text: 'Kääntöpuoli: koko Suomessa sovitut datakeskukset veisivät täysillä lähes kolmanneksen maan sähköstä. Siksi Fingrid arvioi, että sähkön hinta voi nousta muutamaksi vuodeksi – myös sinun sähkölaskussasi.',
+          // Tähän kohtaan liittyvä vastaus kysymykseen "Kuinka paljon tämä näkyy sähkölaskussani?"
+          answer: { pose: 'think', sources: ['fi-vu-ruusunen', 'fi-kiuas', 'fi-yle-energiateollisuus'],
+              text: 'Tavallisina päivinä tuskin paljoa, mutta hintapiikeissä selvästi: valtioneuvoston selvityksen mukaan 2 500 megawatin lisäkulutus nostaisi huippuhetkinä hinnan lähes euroon kilowattitunnilta. Silloin tunnin saunominen maksaisi pörssisähköllä noin 6 euroa. Energiateollisuuden mukaan hinta ei nouse, jos uutta tuotantoa rakennetaan samaa tahtia.' },
+          chart: {
+              title: 'Sähkönkulutus vuodessa', unit: 'TWh',
+              bars: [
+                  { label: 'Koko Suomi (2025)', value: 85 },
+                  { label: 'Datakeskukset täysillä', value: 26 },
+              ],
+          } },
+    ],
+    maankaytto: [
+        { pose: 'point', sources: ['tre-ks-tarastenjarvi', 'tre-yle-nokia'],
+          text: 'Tampereen seudulla datakeskukset tulevat teollisuusalueille, esimerkiksi Kangasalan Tarasten kiertotalousalueelle ja Nokian Juhansuon 5,5 hehtaarin teollisuustontille.' },
+        { pose: 'point', sources: ['tre-ks-asema', 'tre-yle-nokia', 'tre-akaa-verda', 'tre-yle-mantta', 'fi-ely-kirkkonummi', 'fi-yle-vaasa'],
+          text: 'Tonttien koot vaihtelevat paljon. Suurimmat kampukset vievät satoja jalkapallokentällisiä maata.',
+          chart: {
+              title: 'Datakeskustonttien kokoja', unit: 'ha',
+              bars: [
+                  { label: 'Kangasala, Asema', value: 5, display: 'noin 5' },
+                  { label: 'Nokia', value: 5.5, display: '5,5' },
+                  { label: 'Akaa', value: 10, display: 'noin 10' },
+                  { label: 'Mänttä-Vilppula', value: 40 },
+                  { label: 'Kirkkonummi', value: 50, display: 'noin 50' },
+                  { label: 'Vaasa', value: 190, display: 'noin 190' },
+              ],
+              note: '1 hehtaari on noin 1,4 jalkapallokenttää.',
+          } },
+        { pose: 'think', sources: ['tre-business-kangasala'],
+          text: 'Kunta päättää kaavoituksesta. Kangasala arvioi jokaisen hankkeen erikseen: ilman voimassa olevaa kaavaa tarvitaan kaavamuutos tai uusi kaava.' },
+        { pose: 'point', sources: ['fi-kaleva-muhos', 'fi-vu-lvv'],
+          text: 'Muhoksella metsää hakattiin Googlen tontilta ennen ympäristöarviointia, ja viranomainen määräsi työt keskeytettäväksi. Ilman lupia työmaa voi siis pysähtyä.' },
+        { pose: 'wave', sources: ['fi-hs-fingrid'],
+          text: 'Fingridin mukaan datakeskukset kannattaa sijoittaa lähelle sähköntuotantoa tai sinne, missä verkossa on jo tilaa. Silloin uusia voimalinjoja tarvitaan vähemmän.' },
+    ],
+    liikenne: [
+        { pose: 'point', sources: ['fi-yle-kouvola'],
+          text: 'Datakeskustyömaalle ajaa paljon raskasta liikennettä. Kouvolan työmaalle ajaa kiireisimmillään noin 500 rekkaa viikossa.' },
+        { pose: 'point', sources: ['fi-jarvenpaa-yva'],
+          text: 'Kun datakeskus on valmis, liikenne hiljenee: jäljelle jää vain murto-osa työmaan liikenteestä.',
+          chart: {
+              title: 'Ajoneuvoja päivässä, esimerkkinä Järvenpään hanke', unit: 'kpl',
+              bars: [
+                  { label: 'Henkilöautot, rakentaminen', value: 240, display: 'enintään 240' },
+                  { label: 'Raskaat, rakentaminen', value: 40, display: 'noin 40' },
+                  { label: 'Henkilöautot, valmis keskus', value: 15, display: 'noin 15' },
+                  { label: 'Raskaat, valmis keskus', value: 2, display: '1–2' },
+              ],
+          } },
+        { pose: 'think', sources: ['fi-jarvenpaa-yva'],
+          text: 'Huippu ei kestä koko ajan: liikennemäärät vaihtelevat rakentamisen vaiheen mukaan, ja keskimäärin liikennettä on selvästi huippua vähemmän.' },
+        { pose: 'point', sources: ['tre-ks-tarastenjarvi', 'tre-rekisteri'],
+          text: 'Pirkanmaan hankkeet ovat Tampereen lähikunnissa, kuten Kangasalan Tarasteella ja Nokian Juhansuolla, joten tamperelaiselle rakentajalle työmatkat jäävät lyhyiksi.' },
+        { pose: 'wave', sources: ['fi-jarvenpaa-yva'],
+          text: 'Työmaaliikenne näkyy lähiteillä muutaman vuoden: esimerkiksi Järvenpäässä ensimmäinen rakennusvaihe kestää noin kaksi vuotta.' },
+    ],
+    tulevaisuus: [
+        { pose: 'point', sources: ['tre-rekisteri'],
+          text: 'Pirkanmaalla on kansallisen rekisterin mukaan 12 datakeskushanketta, esimerkiksi Kangasalla, Nokialla, Valkeakoskella ja Akaassa.' },
+        { pose: 'point', sources: ['fi-inderes'],
+          text: 'Koko Suomessa hankkeita on vireillä moninkertaisesti enemmän kuin toiminnassa olevia datakeskuksia.',
+          chart: {
+              title: 'Datakeskukset Suomessa vuonna 2026', unit: 'kpl',
+              bars: [
+                  { label: 'Toiminnassa', value: 40, display: 'noin 40' },
+                  { label: 'Rakentaminen käynnissä', value: 14 },
+                  { label: 'Vireillä yhteensä', value: 130, display: 'noin 130' },
+              ],
+          } },
+        { pose: 'think', sources: ['fi-korkia'],
+          text: 'Kaikki eivät toteudu: Fingridin arvion mukaan sille tehdyistä liityntäkyselyistä toteutuu vain noin kymmenesosa.' },
+        { pose: 'point', sources: ['tre-rekisteri'],
+          text: 'Osa hankkeista etenee jo: Kangasalan Ruutanan 100 megawatin datakeskuksen rakennuslupa sai lainvoiman elokuussa 2026.' },
+        { pose: 'wave', sources: ['tre-rekisteri', 'fi-korkia'],
+          text: 'Rakentajalle tämä tarkoittaa todennäköisesti useiden vuosien työtä Pirkanmaalla, mutta kaikkia hankkeita ei kannata laskea varmoiksi.' },
+    ],
+    turvallisuus: [
+        { pose: 'point', sources: ['fi-rt-tyoturvallisuus'],
+          text: 'Isoilla työmailla turvallisuus on rakentajalle tärkeintä. Vuonna 2025 rakentamisessa kuoli kuusi ihmistä, useimmiten putoamisissa tai nostettavien kuormien alle jäämisissä.' },
+        { pose: 'point', sources: ['fi-jarvenpaa-yva'],
+          text: 'Datakeskustyömaata valvotaan kulunvalvonnalla ja kameroilla, ja eri työvaiheiden turvallisuusriskit arvioidaan etukäteen.' },
+        { pose: 'point', sources: ['fi-jarvenpaa-yva'],
+          text: 'Varavoimana on dieselgeneraattoreita, mutta niitä ajetaan vain testeissä ja sähkökatkoissa. Kantaverkossa katkoja on keskimäärin vain 2–3 minuuttia vuodessa.',
+          chart: {
+              title: 'Varageneraattorin käyttö, esimerkkinä Järvenpään hanke', unit: 'tuntia vuodessa',
+              bars: [
+                  { label: 'Tunteja vuodessa', value: 8760, display: '8 760' },
+                  { label: 'Yhden generaattorin testit', value: 10, display: 'enintään 10' },
+              ],
+          } },
+        { pose: 'think', sources: ['fi-jarvenpaa-yva'],
+          text: 'Polttoainetta varastoidaan satoja tonneja kaksiseinämäisissä säiliöissä. Suurin riski on, että tulipalon sammutusvedet pääsevät ympäristöön.' },
+        { pose: 'wave', sources: ['fi-vn-cer'],
+          text: 'Datakeskukset kuuluvat digitaaliseen infrastruktuuriin, jonka suojaamista EU:n kriittisen infrastruktuurin direktiivi koskee.' },
+    ],
+    ymparisto: [
+        { pose: 'point', sources: ['tre-te-datasali'],
+          text: 'Tampereella datakeskuksen lämpö hyödynnetään jo: Tampereen Energia syöttää Nokian datasalin hukkalämmön kaukolämpöverkkoon.' },
+        { pose: 'point', sources: ['fi-kaleva-muhos'],
+          text: 'Muhoksella metsää hakattiin Googlen tontilta ennen ympäristöarviointia. Korvaavaa metsää luvataan alle puolet hakatusta.',
+          chart: {
+              title: 'Metsää Googlen tontilla Muhoksella', unit: 'ha',
+              bars: [
+                  { label: 'Hakattu ennen arviointia', value: 330, display: 'noin 330' },
+                  { label: 'Korvaava istutus', value: 130 },
+              ],
+          } },
+        { pose: 'think', sources: ['fi-sll'],
+          text: 'Datakeskukset kuluttavat paljon sähköä, ja laitteisiin tarvitaan louhittuja metalleja. Lyhytikäisistä laitteista syntyy elektroniikkajätettä.' },
+        { pose: 'point', sources: ['fi-caverion'],
+          text: 'Suomen viileä ilmasto vähentää jäähdytyksen tarvetta. Vedenkulutus on ongelma lähinnä kuumissa ja kuivissa maissa.' },
+        { pose: 'wave', sources: ['tre-yle-nokia', 'tre-yle-mantta'],
+          text: 'Uusissa Pirkanmaan hankkeissa lämmön hyödyntäminen on vielä auki, esimerkiksi Nokialla ja Mänttä-Vilppulassa.' },
+    ],
+    tyopaikat: [
+        // Järjestys: hyvät vaikutukset ja kerrannaisvaikutukset ensin, kääntöpuoli lopuksi.
+        { pose: 'wave', sources: ['fi-rt-kasvu', 'fi-vu-duunitori'],
+          text: 'Datakeskukset vetävät rakentamisen kasvuun juuri nyt, kun asuntorakentaminen on historiallisen matalalla. Datakeskusten työpaikkailmoituksista lähes puolet on rakennusalalta.',
+          chart: PHOTOS.tyomaa },
+        { pose: 'point', sources: ['fi-yle-finer', 'fi-kouvolan-asunnot'],
+          text: 'Raha ei jää työmaalle, vaan kiertää alueella. Kouvolan datakeskustyömaalla joka kolmas työntekijä on paikallinen, kaupungin vuokrayhtiö on vuokrannut yli 200 asuntoa työmaan väelle, ja yksi urakoitsija on kasvattanut liikevaihtonsa 6–10 miljoonasta yli 40 miljoonaan euroon.',
+          chart: { type: 'illustration', items: [
+              { icon: 'fa-user-group', value: 'joka 3.', label: 'työntekijä paikallinen' },
+              { icon: 'fa-house', value: 'yli 200', label: 'vuokra-asuntoa työmaan väelle' },
+              { icon: 'fa-chart-line', value: '6–10 → 40+ M€', label: 'urakoitsijan liikevaihto' },
+          ] } },
+        { pose: 'point', sources: ['tre-akaa-dcd'],
+          text: 'Lähellä Tamperetta, Akaassa, suunniteltu datakeskus toisi kaupungille rahaa joka vuosi kiinteistöverona – ja lisäksi noin sata työpaikkaa.',
+          chart: {
+              title: 'Mitä Akaan datakeskus toisi kaupungille', unit: 'euroa',
+              bars: [
+                  { label: 'Tontin myynti (kerran)', value: 600000, display: 'noin 600 000' },
+                  { label: 'Kiinteistövero joka vuosi', value: 550000, display: 'noin 550 000' },
+                  { label: 'Rakennuslupamaksut (kerran)', value: 208000, display: '208 000' },
+              ],
+              note: 'Kiinteistövero toistuu joka vuosi niin kauan kuin datakeskus toimii.',
+          } },
+        { pose: 'point', sources: ['fi-ms-fdca'],
+          text: 'Koko Suomessa suunniteltujen datakeskusten arvioidaan tuovan rakennusvaiheessa 1,7 miljardia euroa verotuloja ja vuodesta 2030 alkaen 400 miljoonaa euroa joka vuosi.',
+          chart: { type: 'illustration', items: [
+              { icon: 'fa-helmet-safety', value: '1,7 mrd €', label: 'verotuloja rakennusvaiheessa' },
+              { icon: 'fa-building-columns', value: '400 M€', label: 'verotuloja joka vuosi 2030 alkaen' },
+          ] } },
+        { pose: 'think', sources: ['fi-tiedeakatemia', 'fi-mtv-vero'],
+          text: 'Kääntöpuoli: Business Finlandin arvion mukaan investoinnista jää Suomeen vain 10–30 %, koska kalliit laitteet tulevat ulkomailta. Valmiissa datakeskuksessa on yleensä vain 20–50 työntekijää.',
+          chart: { type: 'illustration', items: [
+              { icon: 'fa-plane-departure', value: '10–30 %', label: 'investoinnista jää Suomeen' },
+              { icon: 'fa-user', value: '20–50', label: 'työntekijää valmiissa keskuksessa' },
+          ] } },
+    ],
+};
+
+// Prompt-palkin vastaus on kovakoodattu ja aina sama kussakin aiheessa.
+// Jos kohdalla on oma `answer`, sitä käytetään tämän sijaan.
+const TAMPERE_ANSWERS = {
+    energia: { pose: 'think', sources: ['fi-kiuas', 'fi-omakotiliitto', 'fi-hs-fingrid'],
+        text: 'Lyhyesti: 100 megawatin datakeskus vie sähköä kuin 16 700 kiuasta jatkuvasti päällä, eli vuodessa yhtä paljon kuin kymmenien tuhansien omakotitalojen kodit. Siksi sähkön hinta voi nousta hetkeksi.' },
+    maankaytto: { pose: 'think', sources: ['tre-ks-tarastenjarvi', 'tre-yle-nokia', 'fi-vu-lvv'],
+        text: 'Lyhyesti: Tampereen seudun hankkeet ovat teollisuustonteilla, ja ilman kunnollisia lupia työmaa voidaan pysäyttää.' },
+    liikenne: { pose: 'think', sources: ['fi-jarvenpaa-yva', 'fi-yle-kouvola'],
+        text: 'Lyhyesti: raskasta liikennettä on paljon muutaman vuoden rakentamisen aikana, valmiissa keskuksessa vain pari kuljetusta päivässä.' },
+    tulevaisuus: { pose: 'think', sources: ['tre-rekisteri', 'fi-korkia'],
+        text: 'Lyhyesti: Pirkanmaalla on tusinan verran hankkeita, mutta vain osa niistä toteutuu.' },
+    turvallisuus: { pose: 'think', sources: ['fi-rt-tyoturvallisuus', 'fi-jarvenpaa-yva'],
+        text: 'Lyhyesti: rakentajalle tärkeintä on työmaaturvallisuus. Valmiin keskuksen varageneraattorit käyvät harvoin, lähinnä testeissä.' },
+    ymparisto: { pose: 'think', sources: ['tre-te-datasali', 'fi-sll'],
+        text: 'Lyhyesti: Tampereella hukkalämpö lämmittää jo koteja, mutta datakeskukset kuluttavat paljon sähköä ja luonnonvaroja.' },
+    tyopaikat: { pose: 'think', sources: ['tre-akaa-dcd', 'fi-yle-finer', 'fi-tiedeakatemia'],
+        text: 'Lyhyesti: datakeskus tuo alueelle rahaa palkkoina, vuokrina, alihankintana ja kiinteistöverona – Akaassa noin 550 000 euroa vuodessa. Silti suurin osa investoinnista menee ulkomaisiin laitteisiin.' },
+};
